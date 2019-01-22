@@ -63,10 +63,19 @@ class App extends Component {
     const filtered = newWaste.filter(item =>{
       return item.isFavorite
     });
-    
-    const results = newWaste.filter(item =>{
-      return item.keywords.includes(this.state.value)
-    });
+    var results = [];
+    if (this.state.value){
+      console.log(this.state.value)
+      results = newWaste.filter(item =>{
+        return (this.state.value.replace(/[^\w\s]/gi, '').split(" ")).every(function(value){
+          if (value.length > 0){
+            return item.keywords.includes(value);
+          }else{
+            return true;
+          }
+        })
+      });
+    }
     this.setState({
       favorites: filtered,
       searchResults: results,
@@ -84,15 +93,21 @@ class App extends Component {
     }
   }
   handleSubmit(e){
+    e.preventDefault();
     if (this.state.value.length > 0){
       const results = this.state.wasteItems.filter(item =>{
-        return item.keywords.includes(this.state.value)
+        return (this.state.value.replace(/[^\w\s]/gi, '').split(" ")).every(function(value){
+          if (value.length > 0){
+            return item.keywords.includes(value);
+          }else{
+            return true;
+          }
+        })
       });
       this.setState({
         searchResults: results
       });
     }
-    e.preventDefault();
   }
   
   componentDidMount() {
